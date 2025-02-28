@@ -1,5 +1,4 @@
 # Genkit Node: Building a Weather Service with AI Integration
-
 <!-- TOC -->
 
 - [Genkit Node: Building a Weather Service with AI Integration](#genkit-node-building-a-weather-service-with-ai-integration)
@@ -9,16 +8,18 @@
     - [Weather Tool Implementation](#weather-tool-implementation)
     - [AI Flow Definition](#ai-flow-definition)
     - [Express Server Configuration](#express-server-configuration)
+  - [Full Code](#full-code)
   - [Setup \& Development](#setup--development)
   - [Dependencies](#dependencies)
     - [Core Dependencies](#core-dependencies)
     - [Development Dependencies](#development-dependencies)
   - [Project Configuration](#project-configuration)
   - [License](#license)
+  - [Resources](#resources)
 
 <!-- /TOC -->
-## Overview
 
+## Overview
 This project demonstrates how to build an AI-enhanced weather service using Genkit, TypeScript, OpenWeatherAPI and Github Models. The application showcases modern Node.js patterns and AI integration techniques.
 
 ## Technical Deep Dive
@@ -89,6 +90,74 @@ const app = express({
 });
 ```
 
+## Full Code
+
+The full code for the weather service is as follows:
+
+```typescript
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+
+import { genkit, z } from 'genkit';
+import { startFlowServer } from '@genkit-ai/express';
+import { openAIO3Mini, github } from 'genkitx-github';
+import {OpenWeatherAPI } from 'openweather-api-node';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const ai = genkit({
+  plugins: [
+    github({ githubToken: process.env.GITHUB_TOKEN }),
+  ],
+  model: openAIO3Mini,
+});
+
+const weatherToolInputSchema = z.object({ 
+  location: z.string().describe('The location to get the current weather for')
+});
+
+const getWeather = ai.defineTool(
+  {
+    name: 'getWeather',
+    description: 'Gets the current weather in a given location',
+    inputSchema: weatherToolInputSchema,
+    outputSchema: z.string(),
+  },
+  async (input) => {
+
+    const weather = new OpenWeatherAPI({
+        key: process.env.OPENWEATHER_API_KEY,
+        units: "metric"
+    })
+
+    const data = await weather.getCurrent({locationName: input.location});
+
+    return `The current weather in ${input.location} is: ${data.weather.temp.cur} Degrees in Celsius`;
+  }
+);
+
+const helloFlow = ai.defineFlow(
+  {
+    name: 'helloFlow',
+    inputSchema: z.object({ location: z.string() }),
+    outputSchema: z.string(),
+  },
+  async (input) => {
+
+    const response  = await ai.generate({
+      tools: [getWeather],
+      prompt: `What's the weather in ${input.location}?`
+    });
+
+    return response.text;
+  }
+);
+
+startFlowServer({
+  flows: [helloFlow]
+});
+```
+
 ## Setup & Development
 
 1. Install dependencies:
@@ -118,6 +187,11 @@ And then launch the debugger in your IDE. See the `.vscode/launch.json` file for
 npm run build
 ```
 
+6. Run the project in production mode:
+```bash
+npm run start:production
+```
+
 ## Dependencies
 
 ### Core Dependencies
@@ -141,3 +215,9 @@ npm run build
 ## License
 
 Apache 2.0
+
+## Resources
+
+- [Firebase Genkit](https://firebase.google.com/products/genkit)
+- [GitHub Models](https://github.com/marketplace/models)
+- [Firebase Express Plugin](https://firebase.google.com/docs/genkit/deploy-node)

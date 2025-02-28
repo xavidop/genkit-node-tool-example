@@ -8,6 +8,7 @@
     "genkit:start": "genkit start -- npm run start",
     "genkit:start:debug": "genkit start -- npm run start:debug",
     "start": "tsx --watch src/index.ts",
+    "start:production": "node lib/index.js",
     "start:debug": "tsx --watch --inspect-brk src/index.ts",
     "build": "tsc"
   },
