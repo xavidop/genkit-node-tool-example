@@ -25,7 +25,7 @@ This project demonstrates how to build an AI-enhanced weather service using Genk
 ## Technical Deep Dive
 
 ### AI Configuration
-The core AI setup is initialized with Genkit and GitHub plugin integration. In this case we are going to use the OpenAI GPT-3 model:
+The core AI setup is initialized with Genkit and GitHub plugin integration. In this case we are going to use the OpenAI o3-mini model:
 
 ```typescript
 const ai = genkit({
