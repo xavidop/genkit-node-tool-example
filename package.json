@@ -27,10 +27,10 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@genkit-ai/express": "^1.0.5",
+    "@genkit-ai/express": "^1.8.0",
     "dotenv": "^16.4.7",
-    "genkit": "^1.0.5",
-    "genkitx-github": "^1.13.1",
+    "genkit": "^1.8.0",
+    "genkitx-github": "^1.14.0",
     "openweather-api-node": "^3.1.5"
   },
   "devDependencies": {
