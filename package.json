@@ -34,7 +34,7 @@
     "openweather-api-node": "^3.1.5"
   },
   "devDependencies": {
-    "tsx": "^4.19.2",
+    "tsx": "^4.22.4",
     "typescript": "^5.7.2"
   }
 }
